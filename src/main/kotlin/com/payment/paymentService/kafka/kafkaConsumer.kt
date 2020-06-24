@@ -6,7 +6,6 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.http.HttpHeaders
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import reactor.core.publisher.toMono
 import reactor.kafka.receiver.KafkaReceiver
 import reactor.util.context.Context
 import java.util.concurrent.CountDownLatch
@@ -21,7 +20,7 @@ class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>
                 .flatMapSequential { receiverRecord ->
                     process(receiverRecord.value() as Event)
                             .subscriberContext(getContextFromKafkaHeader(receiverRecord.headers()))
-                            .flatMap { receiverRecord.receiverOffset().toMono() }
+                            .flatMap { Mono.just(receiverRecord.receiverOffset()) }
                 }
                 .flatMap { it.commit() }
                 .subscribe()
@@ -47,4 +46,7 @@ class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>
         }.map { true }
     }
 
+    fun setCountDownLatch(count: Int) {
+        countDownLatch = CountDownLatch(count)
+    }
 }

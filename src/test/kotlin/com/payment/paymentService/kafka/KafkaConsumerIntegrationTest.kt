@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.concurrent.TimeUnit
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -19,13 +20,14 @@ class KafkaConsumerIntegrationTest(@Autowired val testKafkaProducer: TestKafkaPr
 
     @Test
     fun `should consumer kafka events`() {
+        kafkaConsumer.setCountDownLatch(1)
         val event = Event("Id", "itemName", 3, "NET_BANKING", "email")
 
         testKafkaProducer.produce(event, "orderDetails", "abcd1234").subscribe()
 
         val receivedMessages = kafkaConsumer.messageList
 
-        Thread.sleep(200)
+        kafkaConsumer.countDownLatch.await(5, TimeUnit.SECONDS)
         receivedMessages.size shouldBe 1
 
     }
