@@ -22,10 +22,13 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+	implementation("io.projectreactor.kafka:reactor-kafka:1.1.1.RELEASE")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 	}
 	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("io.kotlintest:kotlintest-runner-junit5:3.1.10")
+	testImplementation("org.springframework.kafka:spring-kafka-test:2.2.4.RELEASE")
 	testImplementation("io.mockk:mockk:1.10.0")
 }
 
