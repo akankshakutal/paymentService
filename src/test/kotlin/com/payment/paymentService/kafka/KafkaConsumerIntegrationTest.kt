@@ -25,9 +25,9 @@ class KafkaConsumerIntegrationTest(@Autowired val testKafkaProducer: TestKafkaPr
 
         testKafkaProducer.produce(event, "orderDetails", "abcd1234").subscribe()
 
+        kafkaConsumer.countDownLatch.await(5, TimeUnit.SECONDS)
         val receivedMessages = kafkaConsumer.messageList
 
-        kafkaConsumer.countDownLatch.await(5, TimeUnit.SECONDS)
         receivedMessages.size shouldBe 1
 
     }
