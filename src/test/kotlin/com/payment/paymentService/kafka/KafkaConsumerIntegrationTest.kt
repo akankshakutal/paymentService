@@ -1,5 +1,6 @@
 package com.payment.paymentService.kafka
 
+import com.payment.paymentService.payment.PaymentMode
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -21,7 +22,7 @@ class KafkaConsumerIntegrationTest(@Autowired val testKafkaProducer: TestKafkaPr
     @Test
     fun `should consumer kafka events`() {
         kafkaConsumer.setCountDownLatch(1)
-        val event = Event("Id", "itemName", 3, "NET_BANKING", "email")
+        val event = Event("orderId",PaymentMode.NET_BANKING,2000)
 
         testKafkaProducer.produce(event, "orderDetails", "abcd1234").subscribe()
 
