@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono
 class PaymentController(val paymentService: PaymentService) {
 
     @PostMapping("/make/payment")
-    fun pay(@RequestBody accountDetails: AccountDetails): Mono<PaymentResponse> {
-        return paymentService.pay(accountDetails)
+    fun pay(@RequestBody paymentDetails: PaymentDetails): Mono<PaymentResponse> {
+        return paymentService.pay(paymentDetails)
     }
 
 }

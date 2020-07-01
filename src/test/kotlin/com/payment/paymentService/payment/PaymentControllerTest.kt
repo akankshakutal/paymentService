@@ -18,11 +18,11 @@ class PaymentControllerTest(@Autowired val testClient: WebTestClient) {
 
     @Test
     fun `should save order details and return it with 200 ok`() {
-        val response = PaymentResponse()
+        val response = PaymentResponse("SUCCESS")
         Mockito.`when`(paymentService.pay(any())).thenReturn(Mono.just(response))
         testClient.post()
                 .uri("/make/payment")
-                .bodyValue(AccountDetails("KOTAK1234", "display name", 3000))
+                .bodyValue(PaymentDetails("KOTAK1234", "display name", 3000, "orderId", PaymentMode.NET_BANKING))
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
