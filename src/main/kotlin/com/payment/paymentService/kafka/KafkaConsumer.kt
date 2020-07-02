@@ -41,8 +41,8 @@ class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>
         return context
     }
 
-    private fun process(message: Event): Mono<Boolean> {
-        return prospectRepository.save(Prospect(message.orderId, message.paymentMode, message.amount))
+    fun process(message: Event): Mono<Boolean> {
+        return prospectRepository.save(Prospect(message.orderId, message.paymentMode, message.amount, "PENDING"))
                 .map { countDownLatch.countDown() }
                 .map { true }
     }

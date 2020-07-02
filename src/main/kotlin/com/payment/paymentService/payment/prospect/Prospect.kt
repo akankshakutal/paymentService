@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "paymentDetails")
-data class Prospect(val orderId: String, val paymentMode: PaymentMode, val amount: Int) {
+data class Prospect(val orderId: String, val paymentMode: PaymentMode, val amount: Int, var status: String) {
     @Id
     lateinit var id: String
 }

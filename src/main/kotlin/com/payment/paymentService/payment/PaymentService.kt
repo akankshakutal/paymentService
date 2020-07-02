@@ -10,9 +10,12 @@ class PaymentService(
         val prospectRepository: ProspectRepository
 ) {
     fun pay(paymentDetails: PaymentDetails): Mono<PaymentResponse> {
-        return prospectRepository.save(Prospect(paymentDetails.orderId, paymentDetails.paymentMode, paymentDetails.amount))
-                .map { PaymentResponse("SUCCESS") }
+        return prospectRepository.findByOrderId(paymentDetails.orderId).flatMap {
+            prospect ->
+            prospect.status = "PAID"
+            prospectRepository.save(prospect)
+        }.map { PaymentResponse("SUCCESS", it.amount) }
     }
 }
 
-class PaymentResponse(val status: String)
+class PaymentResponse(val status: String, val amount: Int)

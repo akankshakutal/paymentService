@@ -35,6 +35,6 @@ class KafkaConsumerIntegrationTest(@Autowired val testKafkaProducer: TestKafkaPr
 
         val savedDetails = prospectRepository.findByOrderId("orderId").block()
 
-        savedDetails shouldBe Prospect("orderId",PaymentMode.NET_BANKING,2000)
+        savedDetails shouldBe Prospect("orderId", PaymentMode.NET_BANKING, 2000, "PENDING")
     }
 }

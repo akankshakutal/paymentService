@@ -11,32 +11,37 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 class PaymentServiceTest {
-    private val prospectRepository = mockk<ProspectRepository>()
+    private val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 2000, "PAID")
+    private val prospectRepository = mockk<ProspectRepository> {
+        every { findByOrderId(any()) } returns Mono.just(Prospect("orderId", PaymentMode.NET_BANKING, 2000, "PENDING"))
+        every { save<Prospect>(any()) } returns Mono.just(prospect)
+    }
     private val paymentService = PaymentService(prospectRepository)
 
     @Test
-    fun `should save order details to mongo`() {
-        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 2000)
-        every { prospectRepository.save<Prospect>(any()) } returns Mono.just(prospect)
+    fun `should find and save order details to mongo for given ordrId`() {
         val paymentDetails = PaymentDetails("abcd1234", "john", 2000, "orderId", PaymentMode.NET_BANKING)
 
         val payment = paymentService.pay(paymentDetails)
 
         StepVerifier.withVirtualTime { payment }
-                .consumeNextWith { verify { prospectRepository.save(prospect) } }
+                .consumeNextWith {
+                    verify {
+                        prospectRepository.findByOrderId("orderId")
+                        prospectRepository.save(prospect)
+                    }
+                }
                 .verifyComplete()
     }
 
     @Test
     fun `should return payment response`() {
-        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 2000)
-        every { prospectRepository.save<Prospect>(any()) } returns Mono.just(prospect)
         val paymentDetails = PaymentDetails("abcd1234", "john", 2000, "orderId", PaymentMode.NET_BANKING)
 
         val payment = paymentService.pay(paymentDetails).block()!!
+
         payment.status shouldBe "SUCCESS"
-
-
+        payment.amount shouldBe 2000
     }
 
 }

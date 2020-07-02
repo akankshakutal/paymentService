@@ -18,7 +18,7 @@ class PaymentControllerTest(@Autowired val testClient: WebTestClient) {
 
     @Test
     fun `should save order details and return it with 200 ok`() {
-        val response = PaymentResponse("SUCCESS")
+        val response = PaymentResponse("SUCCESS", 1000)
         Mockito.`when`(paymentService.pay(any())).thenReturn(Mono.just(response))
         testClient.post()
                 .uri("/make/payment")

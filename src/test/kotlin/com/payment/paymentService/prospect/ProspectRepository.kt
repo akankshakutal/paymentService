@@ -23,7 +23,7 @@ class ProspectRepositoryTest {
 
     @Test
     fun `save prospect`() {
-        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 3000)
+        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 3000, "PENDING")
         prospectRepository.save(prospect).block()
 
         val savedProspect = prospectRepository.findAll().blockFirst()
@@ -33,7 +33,7 @@ class ProspectRepositoryTest {
 
     @Test
     fun `should find document by orderId`() {
-        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 3000)
+        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 3000, "PENDING")
         prospectRepository.save(prospect).block()
 
         val savedProspect = prospectRepository.findByOrderId("orderId").block()
