@@ -1,5 +1,7 @@
 package com.payment.paymentService.kafka
 
+import com.payment.paymentService.payment.prospect.Prospect
+import com.payment.paymentService.payment.prospect.ProspectRepository
 import org.apache.kafka.common.header.Headers
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -11,9 +13,9 @@ import reactor.util.context.Context
 import java.util.concurrent.CountDownLatch
 
 @Component
-class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>) : ApplicationRunner {
+class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>,
+                    val prospectRepository: ProspectRepository) : ApplicationRunner {
     var countDownLatch = CountDownLatch(1)
-    var messageList = mutableListOf<Event>()
 
     override fun run(args: ApplicationArguments?) {
         kafkaReceiver.receive()
@@ -40,10 +42,9 @@ class KafkaConsumer(val kafkaReceiver: KafkaReceiver<PartitionIdentifier, Event>
     }
 
     private fun process(message: Event): Mono<Boolean> {
-        return Mono.subscriberContext().map {
-            messageList.add(message)
-            countDownLatch.countDown()
-        }.map { true }
+        return prospectRepository.save(Prospect(message.orderId, message.paymentMode, message.amount))
+                .map { countDownLatch.countDown() }
+                .map { true }
     }
 
     fun setCountDownLatch(count: Int) {

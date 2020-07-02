@@ -30,4 +30,14 @@ class ProspectRepositoryTest {
 
         savedProspect shouldBe prospect
     }
+
+    @Test
+    fun `should find document by orderId`() {
+        val prospect = Prospect("orderId", PaymentMode.NET_BANKING, 3000)
+        prospectRepository.save(prospect).block()
+
+        val savedProspect = prospectRepository.findByOrderId("orderId").block()
+
+        savedProspect shouldBe prospect
+    }
 }

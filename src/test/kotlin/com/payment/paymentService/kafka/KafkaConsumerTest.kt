@@ -1,5 +1,6 @@
 package com.payment.paymentService.kafka
 
+import com.payment.paymentService.payment.prospect.ProspectRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -8,13 +9,14 @@ import reactor.core.publisher.Flux
 import reactor.kafka.receiver.KafkaReceiver
 
 class KafkaConsumerTest {
+    private val prospectRepository = mockk<ProspectRepository>()
     private val kafkaReceiver = mockk<KafkaReceiver<PartitionIdentifier, Event>> {
         every { receive() } returns Flux.empty()
     }
 
     @Test
     fun `should return the result`() {
-        val kafkaTopicConsumer = KafkaConsumer(kafkaReceiver)
+        val kafkaTopicConsumer = KafkaConsumer(kafkaReceiver, prospectRepository)
 
         kafkaTopicConsumer.run(null)
 
