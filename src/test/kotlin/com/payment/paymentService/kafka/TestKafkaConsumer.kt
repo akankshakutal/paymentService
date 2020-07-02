@@ -23,7 +23,7 @@ class TestKafkaConsumer : ApplicationRunner {
     @Value("\${spring.kafka.bootstrap-servers}")
     lateinit var kafkaUrl: String
 
-    @Value("\${spring.kafka.template.default-topic}")
+    @Value("\${spring.kafka.consumer.properties.topic}")
     lateinit var topic: String
 
     var countDownLatch = CountDownLatch(1)

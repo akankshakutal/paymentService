@@ -15,7 +15,7 @@ class KafkaConfig {
     @Value("\${spring.kafka.consumer.client-id}")
     lateinit var clientId: String
 
-    @Value("\${spring.kafka.template.default-topic}")
+    @Value("\${spring.kafka.consumer.properties.topic}")
     lateinit var topic: String
 
     @Value("\${spring.kafka.consumer.group-id}")
